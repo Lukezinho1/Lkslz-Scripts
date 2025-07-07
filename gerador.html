@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lkslz Scripts - Gerador de Loadstring</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --laranja: #ff6b35;
+      --laranja-hover: #e55a2b;
+      --preto: #0a0a0a;
+      --cinza-escuro: #1a1a1a;
+      --cinza: #2a2a2a;
+      --cinza-claro: #404040;
+      --branco: #ffffff;
+      --texto-cinza: #b0b0b0;
+      --radius: 12px;
+      --radius-lg: 20px;
+      --shadow: 0 10px 30px rgba(255, 107, 53, 0.2);
+      --shadow-hover: 0 20px 40px rgba(255, 107, 53, 0.3);
+      --gradient: linear-gradient(135deg, var(--laranja) 0%, #ff8c42 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--preto) 0%, var(--cinza-escuro) 100%);
+      color: var(--branco);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Animações */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* Header */
+    header {
+      background: rgba(26, 26, 26, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 107, 53, 0.1);
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 1rem 0;
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--laranja);
+      text-decoration: none;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .logo i {
+      font-size: 2rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--texto-cinza);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-links a:hover {
+      color: var(--laranja);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gradient);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    /* Main Content */
+    .hero {
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 2rem 2rem;
+      position: relative;
+      text-align: center;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(255, 107, 53, 0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      max-width: 800px;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      background: var(--gradient);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradient 3s ease infinite;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--texto-cinza);
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Gerador Section */
+    .gerador-section {
+      padding: 3rem 2rem 5rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 3rem;
+      color: var(--branco);
+    }
+
+    .gerador-card {
+      background: var(--cinza);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      border: 1px solid rgba(255, 107, 53, 0.1);
+      box-shadow: var(--shadow);
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--branco);
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 1rem;
+      background: var(--preto);
+      border: 2px solid var(--cinza-claro);
+      border-radius: var(--radius);
+      color: var(--branco);
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--laranja);
+      box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 120px;
+      font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      border-radius: var(--radius);
+      font-weight: 600;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-primary {
+      background: var(--gradient);
+      color: var(--branco);
+      box-shadow: var(--shadow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 107, 53, 0.1);
+      color: var(--laranja);
+      border: 2px solid var(--laranja);
+    }
+
+    .btn-secondary:hover {
+      background: var(--laranja);
+      color: var(--branco);
+      transform: translateY(-2px);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .result-section {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: var(--preto);
+      border-radius: var(--radius);
+      border: 1px solid var(--cinza-claro);
+      display: none;
+    }
+
+    .result-section.show {
+      display: block;
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .result-title {
+      font-weight: 600;
+      color: var(--laranja);
+    }
+
+    .copy-btn {
+      background: var(--laranja);
+      color: var(--branco);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .copy-btn:hover {
+      background: var(--laranja-hover);
+      transform: scale(1.05);
+    }
+
+    .copy-btn.copied {
+      background: #28a745;
+    }
+
+    .loadstring-result {
+      background: var(--cinza-claro);
+      padding: 1rem;
+      border-radius: var(--radius);
+      font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+      font-size: 0.9rem;
+      color: #87e8ff;
+      word-break: break-all;
+      white-space: pre-wrap;
+      margin-top: 1rem;
+    }
+
+    .instructions {
+      background: rgba(255, 107, 53, 0.1);
+      border: 1px solid var(--laranja);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .instructions h3 {
+      color: var(--laranja);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .instructions ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .instructions li {
+      margin-bottom: 0.5rem;
+      color: var(--texto-cinza);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .instructions li::before {
+      content: '→';
+      color: var(--laranja);
+      font-weight: bold;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--preto);
+      padding: 3rem 2rem 1rem;
+      border-top: 1px solid rgba(255, 107, 53, 0.1);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .social-links a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      background: var(--cinza);
+      border-radius: 50%;
+      color: var(--texto-cinza);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 1.2rem;
+    }
+
+    .social-links a:hover {
+      background: var(--laranja);
+      color: var(--branco);
+      transform: translateY(-3px);
+    }
+
+    .footer-text {
+      color: var(--texto-cinza);
+      font-size: 0.9rem;
+    }
+
+    .footer-text a {
+      color: var(--laranja);
+      text-decoration: none;
+    }
+
+    .footer-text a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .nav-links {
+        gap: 1rem;
+      }
+
+      .hero {
+        padding: 100px 1rem 2rem;
+      }
+
+      .gerador-section {
+        padding: 2rem 1rem 3rem;
+      }
+
+      .gerador-card {
+        padding: 1.5rem;
+      }
+
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    /* Scrollbar personalizada */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--cinza-escuro);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--laranja);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--laranja-hover);
+    }
+
+    /* Efeitos de partículas */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--laranja);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .particle:nth-child(2) { left: 20%; animation-delay: 1s; }
+    .particle:nth-child(3) { left: 30%; animation-delay: 2s; }
+    .particle:nth-child(4) { left: 40%; animation-delay: 3s; }
+    .particle:nth-child(5) { left: 50%; animation-delay: 4s; }
+    .particle:nth-child(6) { left: 60%; animation-delay: 5s; }
+    .particle:nth-child(7) { left: 70%; animation-delay: 6s; }
+    .particle:nth-child(8) { left: 80%; animation-delay: 7s; }
+    .particle:nth-child(9) { left: 90%; animation-delay: 8s; }
+  </style>
+</head>
+<body>
+  <!-- Partículas de fundo -->
+  <div class="particles">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+  </div>
+
+  <header>
+    <div class="header-container">
+      <a href="index.html" class="logo">
+        <i class="fas fa-code"></i>
+        Lkslz Scripts
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="scripts.html">Scripts</a></li>
+          <li><a href="executores.html">Executores</a></li>
+          <li><a href="gerador.html">Gerador Loadstring</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Gerador de Loadstring</h1>
+        <p>Crie loadstrings personalizadas de forma rápida e fácil. Gere códigos otimizados para seus scripts do Roblox.</p>
+      </div>
+    </section>
+
+    <section id="gerador" class="gerador-section">
+      <h2 class="section-title">Gerador de Loadstring</h2>
+      
+             <div class="instructions">
+         <h3><i class="fas fa-info-circle"></i> Como usar:</h3>
+         <ul>
+           <li>Cole a URL do seu script no campo abaixo</li>
+           <li>Clique em "Gerar Loadstring"</li>
+           <li>Copie o resultado e use no seu executor</li>
+         </ul>
+       </div>
+
+       <div class="gerador-card">
+         <form id="loadstringForm">
+           <div class="form-group">
+             <label for="scriptUrl">URL do Script:</label>
+             <input type="url" id="scriptUrl" placeholder="https://raw.githubusercontent.com/usuario/repo/main/script.lua" required>
+           </div>
+
+           <div class="form-group">
+             <button type="submit" class="btn btn-primary">
+               <i class="fas fa-magic"></i>
+               Gerar Loadstring
+             </button>
+             <button type="button" class="btn btn-secondary" onclick="clearForm()">
+               <i class="fas fa-trash"></i>
+               Limpar
+             </button>
+           </div>
+         </form>
+
+        <div id="resultSection" class="result-section">
+          <div class="result-header">
+            <h3 class="result-title">Loadstring Gerada:</h3>
+            <button class="copy-btn" onclick="copyLoadstring()">
+              <i class="fas fa-copy"></i> Copiar
+            </button>
+          </div>
+          <div id="loadstringResult" class="loadstring-result"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="social-links">
+        <a href="https://discord.gg/seulink" title="Discord">
+          <i class="fab fa-discord"></i>
+        </a>
+        <a href="https://www.youtube.com/@LkslzScripts" title="YouTube">
+          <i class="fab fa-youtube"></i>
+        </a>
+                 <a href="https://github.com/Lukezinho1" title="GitHub">
+           <i class="fab fa-github"></i>
+         </a>
+      </div>
+      <div class="footer-text">
+        © 2025 Lkslz Scripts. Todos os direitos reservados.<br>
+        Desenvolvido com <i class="fas fa-heart" style="color: var(--laranja);"></i> para a comunidade Roblox
+      </div>
+    </div>
+  </footer>
+
+  <script>
+         // Função para gerar loadstring
+     function generateLoadstring() {
+       const scriptUrl = document.getElementById('scriptUrl').value.trim();
+
+       if (!scriptUrl) {
+         alert('Por favor, insira a URL do script!');
+         return;
+       }
+
+       // Validar se é uma URL válida
+       try {
+         new URL(scriptUrl);
+       } catch (e) {
+         alert('Por favor, insira uma URL válida!');
+         return;
+       }
+
+       // Gerar loadstring
+       const loadstring = `loadstring(game:HttpGet("${scriptUrl}"))()`;
+
+       // Mostrar resultado
+       document.getElementById('loadstringResult').textContent = loadstring;
+       document.getElementById('resultSection').classList.add('show');
+     }
+
+    // Função para copiar loadstring
+    function copyLoadstring() {
+      const loadstring = document.getElementById('loadstringResult').textContent;
+      
+      navigator.clipboard.writeText(loadstring).then(() => {
+        const button = document.querySelector('.copy-btn');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+        button.classList.add('copied');
+        
+        setTimeout(() => {
+          button.innerHTML = originalText;
+          button.classList.remove('copied');
+        }, 2000);
+      }).catch(err => {
+        console.error('Erro ao copiar: ', err);
+        // Fallback
+        const textArea = document.createElement('textarea');
+        textArea.value = loadstring;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        const button = document.querySelector('.copy-btn');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+        button.classList.add('copied');
+        
+        setTimeout(() => {
+          button.innerHTML = originalText;
+          button.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+         // Função para limpar formulário
+     function clearForm() {
+       document.getElementById('scriptUrl').value = '';
+       document.getElementById('resultSection').classList.remove('show');
+     }
+
+    // Event listeners
+    document.getElementById('loadstringForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      generateLoadstring();
+    });
+
+    // Smooth scrolling para links internos
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Efeito de parallax suave no header
+    window.addEventListener('scroll', () => {
+      const header = document.querySelector('header');
+      const scrolled = window.pageYOffset;
+      header.style.background = `rgba(26, 26, 26, ${0.95 + scrolled * 0.0001})`;
+    });
+
+    // Animação de digitação para o título
+    const title = document.querySelector('.hero h1');
+    const originalText = title.textContent;
+    title.textContent = '';
+    
+    let i = 0;
+    const typeWriter = () => {
+      if (i < originalText.length) {
+        title.textContent += originalText.charAt(i);
+        i++;
+        setTimeout(typeWriter, 100);
+      }
+    };
+    
+    // Iniciar animação após um pequeno delay
+    setTimeout(typeWriter, 500);
+  </script>
+</body>
+</html>
